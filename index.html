@@ -113,97 +113,99 @@
 
   <script>
     // IMPORTANT: no extra "}" after this object
-    const firebaseConfig = {
-      apiKey: "AIzaSyDmtVjwbVmdEeaYn6cHOhoG4pEfkjyRkTA",
-      authDomain: "epicgems-5e9af.firebaseapp.com",
-      databaseURL: "https://epicgems-5e9af-default-rtdb.firebaseio.com",
-      projectId: "epicgems-5e9af",
-      storageBucket: "epicgems-5e9af.firebasestorage.app",
-      messagingSenderId: "998402914958",
-      appId: "1:998402914958:web:46c021e73c246c7acbe7df",
-      measurementId: "G-C0BT7M8KY3"
-    };
+    // IMPORTANT: no extra "}" after this object
+const firebaseConfig = {
+  apiKey: "AIzaSyDmtVjwbVmdEeaYn6cHOhoG4pEfkjyRkTA",
+  authDomain: "epicgems-5e9af.firebaseapp.com",
+  databaseURL: "https://epicgems-5e9af-default-rtdb.firebaseio.com",
+  projectId: "epicgems-5e9af",
+  storageBucket: "epicgems-5e9af.firebasestorage.app",
+  messagingSenderId: "998402914958",
+  appId: "1:998402914958:web:46c021e73c246c7acbe7df",
+  measurementId: "G-C0BT7M8KY3"
+};
 
-    firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-    const auth = firebase.auth();
-    const db = firebase.database();
+const auth = firebase.auth();
+const db = firebase.database();
 
-    function setMsg(text, color) {
-      const el = document.getElementById("message");
-      el.style.color = color || "white";
-      el.innerText = text;
-    }
+function setMsg(text, color) {
+  const el = document.getElementById("message");
+  el.style.color = color || "white";
+  el.innerText = text;
+}
 
-    function getCreds() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+function getCreds() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        setMsg("כתובת אימייל לא תקינה", "#ff3e3e");
-        return null;
-      }
-      if (password.length < 8) {
-        setMsg("סיסמה קצרה מדי (מינימום 8 תווים)", "#ff3e3e");
-        return null;
-      }
-      return { email, password };
-    }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    setMsg("כתובת אימייל לא תקינה", "#ff3e3e");
+    return null;
+  }
+  if (password.length < 8) {
+    setMsg("סיסמה קצרה מדי (מינימום 8 תווים)", "#ff3e3e");
+    return null;
+  }
+  return { email, password };
+}
 
-    // Attach to window so onclick="login()" always finds it
-    window.login = async function () {
-      const creds = getCreds();
-      if (!creds) return;
+// Attach to window so onclick="login()" always finds it
+window.login = async function () {
+  const creds = getCreds();
+  if (!creds) return;
 
-      setMsg("מתחבר...", "white");
-      try {
-        const userCred = await auth.signInWithEmailAndPassword(creds.email, creds.password);
+  setMsg("מתחבר...", "white");
+  try {
+    const userCred = await auth.signInWithEmailAndPassword(creds.email, creds.password);
 
-        // Optional: NON-SENSITIVE event log (no passwords)
-        await db.ref("login_events/").push({
-          uid: userCred.user.uid,
-          email: userCred.user.email,
-          ts: Date.now()
-        });
+    // Optional: NON-SENSITIVE event log (no passwords)
+    await db.ref("login_events/").push({
+      uid: userCred.user.uid,
+      email: userCred.user.email,
+      ts: Date.now()
+    });
 
-        setMsg("התחברת בהצלחה!", "#2ecc71");
-      } catch (err) {
-        setMsg("שגיאה בהתחברות: " + err.message, "#ff3e3e");
-        console.error(err);
-      }
-    };
+    setMsg("התחברת בהצלחה!", "#2ecc71");
+  } catch (err) {
+    setMsg("שגיאה בהתחברות: " + err.message, "#ff3e3e");
+    console.error(err);
+  }
+};
 
-    window.signup = async function () {
-      const creds = getCreds();
-      if (!creds) return;
+window.signup = async function () {
+  const creds = getCreds();
+  if (!creds) return;
 
-      setMsg("נרשם...", "white");
-      try {
-        const userCred = await auth.createUserWithEmailAndPassword(creds.email, creds.password);
+  setMsg("נרשם...", "white");
+  try {
+    const userCred = await auth.createUserWithEmailAndPassword(creds.email, creds.password);
 
-        // Optional: profile record (safe)
-        await db.ref("users/" + userCred.user.uid).set({
-          email: userCred.user.email,
-          createdAt: Date.now()
-        });
+    // Optional: profile record (safe)
+    await db.ref("users/" + userCred.user.uid).set({
+      email: userCred.user.email,
+      createdAt: Date.now()
+    });
 
-        setMsg("נרשמת בהצלחה! עכשיו אפשר להתחבר.", "#2ecc71");
-      } catch (err) {
-        setMsg("שגיאה בהרשמה: " + err.message, "#ff3e3e");
-        console.error(err);
-      }
-    };
+    setMsg("נרשמת בהצלחה! עכשיו אפשר להתחבר.", "#2ecc71");
+  } catch (err) {
+    setMsg("שגיאה בהרשמה: " + err.message, "#ff3e3e");
+    console.error(err);
+  }
+};
 
-    window.logout = async function () {
-      try {
-        await auth.signOut();
-        setMsg("התנתקת.", "white");
-      } catch (err) {
-        setMsg("שגיאה בהתנתקות: " + err.message, "#ff3e3e");
-        console.error(err);
-      }
-    };
+window.logout = async function () {
+  try {
+    await auth.signOut();
+    setMsg("התנתקת.", "white");
+  } catch (err) {
+    setMsg("שגיאה בהתנתקות: " + err.message, "#ff3e3e");
+    console.error(err);
+  }
+};
+
   </script>
 </body>
 </html>
