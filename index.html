@@ -13,6 +13,7 @@
       --success: #2ecc71;
       --danger: #ff3e3e;
     }
+
     body {
       font-family: 'Inter', 'Segoe UI', sans-serif;
       background-color: var(--bg-color);
@@ -23,6 +24,7 @@
       align-items: center;
       height: 100vh;
     }
+
     .box {
       width: 100%;
       max-width: 400px;
@@ -32,7 +34,10 @@
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
+
+    .logo { width: 45px; margin-bottom: 25px; }
     h2 { font-size: 18px; margin-bottom: 20px; text-transform: uppercase; }
+
     input {
       width: 100%;
       padding: 15px;
@@ -44,7 +49,12 @@
       box-sizing: border-box;
       transition: border-color 0.3s;
     }
-    input:focus { border-color: var(--blue); outline: none; }
+
+    input:focus {
+      border-color: var(--blue);
+      outline: none;
+    }
+
     button {
       width: 100%;
       padding: 16px;
@@ -58,28 +68,35 @@
       transition: background-color 0.3s;
       margin-top: 6px;
     }
+
     button:hover { background-color: var(--blue-hover); }
-    .message-area {
-      margin-top: 15px;
-      font-size: 14px;
-      line-height: 1.4;
-      min-height: 20px;
-    }
+
     .row {
       display: flex;
       gap: 10px;
       margin-top: 10px;
     }
     .row button { width: 50%; }
+
+    .message-area {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.4;
+      min-height: 20px;
+    }
   </style>
 </head>
 <body>
 
   <div class="box">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg"
+         alt="Logo" class="logo">
     <h2>התחברות (Demo)</h2>
+
     <input type="email" id="email" placeholder="כתובת אימייל" autocomplete="email" />
     <input type="password" id="password" placeholder="סיסמה" autocomplete="current-password" />
-    <button onclick="login()">כניסה</button>
+
+    <button onclick="login()">כניסה לחשבון</button>
 
     <div class="row">
       <button onclick="signup()">הרשמה</button>
@@ -95,6 +112,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
   <script>
+    // IMPORTANT: no extra "}" after this object
     const firebaseConfig = {
       apiKey: "AIzaSyDmtVjwbVmdEeaYn6cHOhoG4pEfkjyRkTA",
       authDomain: "epicgems-5e9af.firebaseapp.com",
@@ -112,9 +130,9 @@
     const db = firebase.database();
 
     function setMsg(text, color) {
-      const message = document.getElementById("message");
-      message.style.color = color || "white";
-      message.innerText = text;
+      const el = document.getElementById("message");
+      el.style.color = color || "white";
+      el.innerText = text;
     }
 
     function getCreds() {
@@ -133,7 +151,8 @@
       return { email, password };
     }
 
-    async function login() {
+    // Attach to window so onclick="login()" always finds it
+    window.login = async function () {
       const creds = getCreds();
       if (!creds) return;
 
@@ -141,7 +160,7 @@
       try {
         const userCred = await auth.signInWithEmailAndPassword(creds.email, creds.password);
 
-        // Optional: write a NON-SENSITIVE login event (no password)
+        // Optional: NON-SENSITIVE event log (no passwords)
         await db.ref("login_events/").push({
           uid: userCred.user.uid,
           email: userCred.user.email,
@@ -149,16 +168,13 @@
         });
 
         setMsg("התחברת בהצלחה!", "#2ecc71");
-
-        // Redirect to YOUR success page (recommended)
-        // window.location.href = "success.html";
       } catch (err) {
         setMsg("שגיאה בהתחברות: " + err.message, "#ff3e3e");
         console.error(err);
       }
-    }
+    };
 
-    async function signup() {
+    window.signup = async function () {
       const creds = getCreds();
       if (!creds) return;
 
@@ -166,7 +182,7 @@
       try {
         const userCred = await auth.createUserWithEmailAndPassword(creds.email, creds.password);
 
-        // Optional: create a simple profile record
+        // Optional: profile record (safe)
         await db.ref("users/" + userCred.user.uid).set({
           email: userCred.user.email,
           createdAt: Date.now()
@@ -177,9 +193,9 @@
         setMsg("שגיאה בהרשמה: " + err.message, "#ff3e3e");
         console.error(err);
       }
-    }
+    };
 
-    async function logout() {
+    window.logout = async function () {
       try {
         await auth.signOut();
         setMsg("התנתקת.", "white");
@@ -187,7 +203,7 @@
         setMsg("שגיאה בהתנתקות: " + err.message, "#ff3e3e");
         console.error(err);
       }
-    }
+    };
   </script>
 </body>
 </html>
